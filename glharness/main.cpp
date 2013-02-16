@@ -19,27 +19,39 @@
 
 using namespace std::placeholders;
 
-void my_update()
+class my_app
 {
-}
+public:
+	my_app(glh::application& app)
+	{
+		app.start() = std::bind(&my_app::start, this);
+		app.update() = std::bind(&my_app::update, this);
+		app.render() = std::bind(&my_app::render, this);
+		app.size_change() = std::bind(&my_app::size_changed, this, _1, _2);
+	}
 
+private:
+	void start()
+	{
+		
+	}
 
-void my_render()
-{
-}
+	void update()
+	{
+	}
 
+	void render()
+	{
+	}
 
-void my_size_changed(int /* width */, int /* height */)
-{
-}
-
+	void size_changed(int /* width */, int /* height */)
+	{
+	}
+};
 
 int CALLBACK WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 {
-	auto app = std::make_shared<glh::application>("test harness", 640, 480);
-	app->update() = std::bind(&my_update);
-	app->render() = std::bind(&my_render);
-	app->size_change() = std::bind(&my_size_changed, _1, _2);
-
-	return app->run();
+	glh::application app("test harness", 640, 480);
+	my_app ma(app);
+	return app.run();
 }
