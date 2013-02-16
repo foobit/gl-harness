@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="extern">
+      <UniqueIdentifier>{3d527d3c-7818-4494-8484-66881695ab46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\glew">
+      <UniqueIdentifier>{d6a76e7e-c37a-47bb-858f-9c0458585b0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\zlib">
+      <UniqueIdentifier>{ec382107-00ba-4d54-a4db-e7611de5b8b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\libpng">
+      <UniqueIdentifier>{50fc218d-ccde-467d-9b71-ef024b70d56f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pch">
+      <UniqueIdentifier>{6e3b8054-e96a-4c15-8029-5ea9e7b445d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{012655f2-6d2f-44e0-93f5-59de83ae73e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="extern\utf8">
+      <UniqueIdentifier>{68fb984d-06f6-4b25-bcca-17d8c523224f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="extern\glew\glew.c">
+      <Filter>extern\glew</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>pch</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="application.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="str.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="extern\glew\GL\glew.h">
+      <Filter>extern\glew</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\glew\GL\wglew.h">
+      <Filter>extern\glew</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="application.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\utf8\source\utf8.h">
+      <Filter>extern\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\utf8\source\utf8\checked.h">
+      <Filter>extern\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\utf8\source\utf8\core.h">
+      <Filter>extern\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\utf8\source\utf8\unchecked.h">
+      <Filter>extern\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="str.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
