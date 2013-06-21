@@ -27,15 +27,18 @@ bool				_glew_init;
 
 } // unnamed namespace
 
+#define WORK_THREAD 1
+
 application::application(const std::string& title, int width, int height, bool resizable) :
 	m_hwnd(nullptr),
 	m_hdc(nullptr),
-	m_hrc(nullptr),
+	m_hrc_main(nullptr),
 	m_title(title),
 	m_resizable(resizable),
 	m_width(width),
 	m_height(height),
-	m_ready(false)
+	m_ready(false),
+	m_main_id(std::this_thread::get_id())
 {
 	_self = this;
 
@@ -111,6 +114,8 @@ bool application::create_window()
 	pfd.cDepthBits	= 32;
 	pfd.iLayerType	= PFD_MAIN_PLANE;
 
+	std::this_thread::get_id();
+
 	m_hdc = ::GetDC(m_hwnd);
 	if (!m_hdc)
 	{
@@ -124,7 +129,15 @@ bool application::create_window()
 		return false;
 	}
 
-	m_hrc = ::wglCreateContext(m_hdc);
+	m_hrc_main = ::wglCreateContext(m_hdc);
+	m_hrc_work = ::wglCreateContext(m_hdc);
+	if (!::wglShareLists(m_hrc_main, m_hrc_work))
+	{
+		::wglDeleteContext(m_hrc_work);
+		m_hrc_work = nullptr;
+		return false;
+	}
+
     make_current();
 
 	// init glew
@@ -150,13 +163,29 @@ bool application::create_window()
 	}
 
 	m_ready = true;
+
+	#if defined(WORK_THREAD)
+		// user worker thread to do rendering
+		m_thread = std::thread(&application::thread_worker, this);
+	#endif
+
 	return true;
+}
+
+
+void application::thread_worker()
+{
+	while (m_ready)
+	{
+		perform_render();
+	}
 }
 
 
 void application::make_current()
 {
-	::wglMakeCurrent(m_hdc, m_hrc);
+	auto id = m_hrc_work == nullptr || m_main_id == std::this_thread::get_id() ? m_hrc_main : m_hrc_work;
+	::wglMakeCurrent(m_hdc, id);
 }
 
 
@@ -204,8 +233,12 @@ void application::handle_size(int w, int h, int)
 {
 	m_width = w;
 	m_height = h;
+
 	on_size_changed();
-	perform_idle();
+
+	#if !defined(WORK_THREAD)
+		perform_idle();
+	#endif
 }
 
 
@@ -238,12 +271,22 @@ int application::run()
 		perform_idle();
 	}
 
+	m_ready = false;
+
+	// wait for thread to finish
+	if (m_thread.joinable())
+	{
+		m_thread.join();
+	}
+
 	return 0;
 }
 
 
 void application::begin_render()
 {
+	make_current();
+	glViewport(0, 0, m_width, m_height);
 	glClearColor(0, 0, 0.14f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -256,16 +299,24 @@ void application::end_render()
 }
 
 
+void application::perform_render()
+{
+	begin_render();
+	on_render();
+	end_render();
+}
+
+
 void application::perform_idle()
 {
 	on_update();
 	
+	#if !defined(WORK_THREAD)
 	if (m_ready)
 	{
-		begin_render();
-		on_render();
-		end_render();
+		perform_render();
 	}
+	#endif
 }
 
 

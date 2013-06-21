@@ -17,8 +17,6 @@
 #include "pch.h"
 #include "application.h"
 
-using namespace std::placeholders;
-
 class my_app
 {
 public:
@@ -27,7 +25,6 @@ public:
 		app.start() = std::bind(&my_app::start, this);
 		app.update() = std::bind(&my_app::update, this);
 		app.render() = std::bind(&my_app::render, this);
-		app.size_change() = std::bind(&my_app::size_changed, this, _1, _2);
 	}
 
 private:
@@ -50,11 +47,6 @@ private:
 			glColor3f(0, 0, 1);
 			glVertex3f( 1.0f,-1.0f, 0.0f);
 		glEnd();
-	}
-
-	void size_changed(int width, int height)
-	{
-		glViewport(0, 0, width, height);
 	}
 };
 

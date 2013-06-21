@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <thread>
+
 namespace glh {
 
 class application
@@ -52,16 +54,21 @@ private:
 	void handle_size(int w, int h, int t);
 	void handle_min_max_info(MINMAXINFO& mmi);
 	void perform_idle();
+	void thread_worker();
+	void perform_render();
 
 	HWND					m_hwnd;
 	HDC						m_hdc;
-	HGLRC					m_hrc;
+	HGLRC					m_hrc_main;
+	HGLRC					m_hrc_work;
 	WNDCLASSEXW				m_wc;
 	std::string				m_title;
 	bool					m_resizable;
 	bool					m_ready;
 	int						m_width;
 	int						m_height;
+	std::thread::id			m_main_id;
+	std::thread				m_thread;
 
 	callback_function		m_fn_start;
 	callback_function		m_fn_update;
